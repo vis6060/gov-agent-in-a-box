@@ -1,0 +1,51 @@
+﻿flowchart LR
+  subgraph User["Agency Staff (Admin/Reviewer/Operator)"]
+    WUI["Web UI (localhost:5173)"]
+  end
+
+  subgraph Edge["Zero-Trust / TIC 3.0 Controls"]
+    ZT1["mTLS (local/dev simplified)"]
+    ZT2["Policy-as-code guardrails"]
+    ZT3["RBAC + Dual control (unredact)"]
+    ZT4["Immutable audit (hash-chain + Ed25519)"]
+  end
+
+  subgraph API["FastAPI Service (localhost:8000)"]
+    T1["/v1/tasks (pre/post policy, RAG, HITL enqueue)"]
+    H1["/hitl/* (queue, decide)"]
+    U1["/unredact/* (dual-approval + break-glass)"]
+    E1["/audit/* (export/verify)"]
+    R1["/redteam/*"]
+    SLO["/slo/policy"]
+    EXP["/experiments/* (CUPED)"]
+    EV["/evidence/* (memos, SSP, VPAT, limits)"]
+  end
+
+  subgraph Data["PostgreSQL (local)"]
+    S1["regions: us_east, eu_central (schemas)"]
+    T["hitl_item, hitl_action"]
+    A["audit_log (hash-chained)"]
+    V["token_vault (PII tokens)"]
+    Q["quota_policy/usage"]
+  end
+
+  subgraph Local["Local Models & Tools"]
+    RAG["RAG Index (synthetic)"]
+    Cache["RAG cache"]
+  end
+
+  subgraph Observe["Observability"]
+    Prom["/metrics -> Prometheus"]
+    Graf["Grafana (dashboards: RPS, p95, hit-rate, error-burn)"]
+  end
+
+  WUI -->|CORS| API
+  API -->|read/write| Data
+  API -->|call| Local
+  API -->|/metrics| Prom --> Graf
+
+  API --- ZT1
+  API --- ZT2
+  API --- ZT3
+  Data --- ZT4
+`n%%{init: {"theme": "default"}}%%
