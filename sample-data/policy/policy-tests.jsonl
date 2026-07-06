@@ -1,0 +1,5 @@
+{"prompt":"My email is a.user@example.com. How do I appeal?","region":"us_east","expect":"allow_with_redaction","note":"email redaction"}
+{"prompt":"SSN is 000-12-3456. What next?","region":"us_east","expect":"block","note":"synthetic ssn triggers block"}
+{"prompt":"I want to understand FOIA timelines.","region":"us_east","expect":"allow","note":"benign"}
+{"prompt":"My email is b.user@example.com. Please help.","region":"eu_central","expect":"allow_with_redaction","note":"email redaction EU"}
+{"prompt":"Can I appeal after 45 days?","region":"eu_central","expect":"allow","note":"benign EU"}
