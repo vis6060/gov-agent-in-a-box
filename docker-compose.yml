@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    container_name: gov_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports: ["5432:5432"]
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      #- ./app/db/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+      - ./app/db:/docker-entrypoint-initdb.d:ro
+
+  api:
+    build:
+      context: ./app/api
+      dockerfile: Dockerfile
+    container_name: gov_api
+    restart: unless-stopped
+    env_file: .env
+    depends_on: [db]
+    ports: ["8000:8000", "${API_METRICS_PORT}:${API_METRICS_PORT}"]
+    volumes:
+      - ./app/api:/app
+      - ./data:/data
+
+  web:
+    build: ./app/web
+    container_name: gov_web
+    restart: unless-stopped
+    depends_on: [api]
+    ports: ["5173:5173"]
+    volumes:
+      - ./app/web:/app
+      - /app/node_modules 
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: gov_prom
+    restart: unless-stopped
+    volumes:
+      - ./app/infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./app/infra/rules:/etc/prometheus/rules:ro
+    ports: ["9090:9090"]
+      
+  grafana:
+    image: grafana/grafana:11.1.4
+    container_name: gov_grafana
+    restart: unless-stopped
+    ports: ["3000:3000"]
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  db_data:
+  grafana_data:

@@ -1,0 +1,21 @@
+
+
+services:
+  api_canary:
+    build:
+      context: ./app/api
+      dockerfile: Dockerfile
+    container_name: gov_api_canary
+    environment:
+      POSTGRES_HOST: gov_db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-govagent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-govagent}
+      POSTGRES_DB: ${POSTGRES_DB:-govagent}
+      DEFAULT_REGION: ${DEFAULT_REGION:-us_east}
+    depends_on:
+      - db
+    ports:
+      - "8001:8000"
+    networks:
+      - default
