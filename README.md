@@ -52,22 +52,6 @@ assets/
   grafana-slo.png
   audit-export-verify.png
 ```
-
-### Risky prompt → redaction → HITL enqueue
-![Submit task showing redaction and HITL enqueue](assets/ui-submit.png)
-
-### HITL review console
-![Reviewer view showing original text, redacted text, policy reasons, and decision actions](assets/hitl-dashboard.png)
-
-### 60-second rollback flow
-![Rollback flow showing over-redaction reversal](assets/rollback.gif)
-
-### SLO and operations dashboard
-![Grafana dashboard showing p95 latency, RPS, burn rate, cache hit-rate, quota rejects, and HITL queue size](assets/grafana-slo.png)
-
-### Signed audit export and signature verification
-![Audit export and signature verification](assets/audit-export-verify.png)
-
 ---
 
 ## Architecture
@@ -534,6 +518,6 @@ This project is intended to be released under the license included in `LICENSE`.
 
 ---
 
-## Recruiter / portfolio summary
+## Portfolio summary
 
 Built a local, air-gapped-friendly public-sector AI agent governance reference app showing policy-as-code guardrails, HITL review, redaction inspection, rollback, region routing, signed audit export, Prometheus/Grafana SLOs, synthetic data generation, and evidence-pack documentation.
